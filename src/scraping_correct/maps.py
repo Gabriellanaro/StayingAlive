@@ -6,7 +6,10 @@ import pandas as pd
 import time
 
 # === CONFIG ===
-driver_path = r"C:\\programmi\\chromedriver\\chromedriver.exe"
+# driver_path = r"C:\\programmi\\chromedriver\\chromedriver.exe"
+driver_path = (
+    r"C:\Users\Dell\Desktop\Adv. Business Analytics\chromedriver-win64\chromedriver.exe"
+)
 options = Options()
 options.add_argument("--window-size=1920,1080")
 # options.add_argument("--headless")
@@ -14,7 +17,7 @@ options.add_argument("--window-size=1920,1080")
 driver = webdriver.Chrome(service=Service(driver_path), options=options)
 
 # === DATI DI INPUT ===
-csv_path = "scraped_companies_561110_test.csv"
+csv_path = r"C:\Users\Dell\OneDrive - Danmarks Tekniske Universitet\Git Hub\StayingAlive\src\scraping_correct\scraped_companies_561110_active.csv"
 df_input = pd.read_csv(csv_path)
 restaurant_data = df_input.to_dict(orient="records")
 
@@ -25,14 +28,14 @@ all_data = []
 for entry in restaurant_data:
     name = entry["Name"]
     address = entry["Address"]
-    
+
     try:
         print(f"🔎 Cercando: {name} @ {address}")
         query = f"{name} {address}".replace(" ", "+")
         linkmaps = f"https://www.google.com/maps/search/{query}"
         print(f"🔗 Link: {linkmaps}")
         driver.get(linkmaps)
-        time.sleep(5)
+        time.sleep(1)
 
         # Estrai dati principali
         try:
@@ -50,20 +53,34 @@ for entry in restaurant_data:
         try:
             reviews_elem = driver.find_element(By.CSS_SELECTOR, 'div.F7nice > span span[aria-label$="recensioni"]').text
             reviews = reviews_elem.strip("()")  # prende (148) e restituisce 148
-            print(reviews)
+            # print(reviews)
         except:
             reviews = ""
 
-
         try:
             price_level = driver.find_element(By.CSS_SELECTOR, 'div.DfOCNb.fontBodyMedium > div').text.split('\n')[0]
-            print(price_level)
+            # print(price_level)
         except:
             price_level = ""
-        
 
         try:
-            tags = driver.find_element(By.CSS_SELECTOR, 'div.UsdlK').text
+            # Locate all outer divs with the class "KNfEk aUjao"
+            outer_divs = driver.find_elements(By.CSS_SELECTOR, "div.KNfEk.aUjao")
+
+            # Extract the text from the specific span inside each div
+            tags = []
+            for div in outer_divs:
+                try:
+                    tag = div.find_element(
+                        By.CSS_SELECTOR, "div.tXNTee span.uEubGf.fontBodyMedium"
+                    ).text
+                    tags.append(tag)
+                except:
+                    continue  # Skip if the specific span is not found in this div
+
+            # Join all tags into a single string, separated by commas
+            tags = ", ".join(tags)
+            print(tags)
         except:
             tags = ""
 
