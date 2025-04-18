@@ -18,8 +18,8 @@ driver = webdriver.Chrome(service=Service(driver_path), options=options)
 branchekodes = [
     #561110,
     #561190,
-    563010,
-    # 563020,
+    #563010,
+    563020,
 ]
 
 for branchekode in branchekodes:
