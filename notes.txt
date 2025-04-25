@@ -1,0 +1,30 @@
+preparazione dataset survival analysis
+
+filtrare il dataset dei pedoni (foot_traffic.csv) e tenere solo i fields utili: lat, lon,  aadt_fod_7_19 (media annuale dalle 7 alle 19), hvdt_fod_7_19 (max peak dalle 17 alle 19).
+trovare nuove coordinate partendo dal daqtaset dei pedoni (quali ? quante?).
+alle nuove coordinate trovate  interpolare i campi del dataset di pedoni, ciè per ogni nuova coordinata trovare : aadt_fod_7_19 (media annuale dalle 7 alle 19), hvdt_fod_7_19 (max peak dalle 17 alle 19).
+Per fare ciò si prendono un range di coordinate originali intorno a ogni nuova coordinata e si calcola media (?) aadt_fod_7_19 e hvdt_fod_7_19. 
+
+ora abbiamo dataset completo dei pedoni.
+
+
+ora integriamo dataset popolazione (population_df.csv)
+nel dataset popolazione ogni riga è uno zipcode e non una coord.
+quindi si convertono gli zipcode in coordinate, e per ogni coordinata del ds dei pedoni si prende lo zipcode piu vicino (o altri modi piu elaborati con chat gpt).
+
+quindi ora il dataset dei pedoni aumentato con le nuove coordinate contiene:  lat, lon,  aadt_fod_7_19, hvdt_fod_7_19, Total (abitanti totali), population_density_km2, .
+
+ora itnegriamo il dataset dei ristoranti (scarped_companies_combined_clean_with_coords.csv)
+per ogni coord del ds pedoni si trova il numero di ristoranti vicino calcolato dal ds dei ristoranti (scarped_companies_combined_clean_with_coords) , e durata media della attività, sempre calcolata dal ds dei ristoranti.
+il problema è che chiudono tutte lo stesso periodo quindi si fakano le date di chiusura?
+inoltre aggiungere per ogni coordinata il count dei branchekode. quindi dei ristoranti che sono nel range della coordinata si guarda il  branchekode e si contano i ristoranti divisi per branchekode
+
+quindi il ds finale avra righe del tipo
+lat , lon ,  aadt_fod_7_19  ,  hvdt_fod_7_19 , Total (abitanti totali),  population_density_km2  , restaurants_number , average_duration_activity, 56110_count , 561190_count , 563010_count,  563020_count.
+
+su questo dataset finale alessia e giulia fanno survival analysis
+
+Gabriel oltre alle features sopra citate considera anche le features scrapate da maps (rating, num reviews, price) fakando dati in modo intelligente.
+
+GOAL: ottenere uno score della survival analysis che sia mappabile come nuovo layer nella heatmap che già abbiamo. 
+
